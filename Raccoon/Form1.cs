@@ -21,6 +21,8 @@ namespace Raccoon
         Timer time;
         bool stop;
 
+        // 1ms마다 timer를 실행해서 캐릭터랑 적이 움직이는거 처럼 UI를 업데이트 시켜주는 형식 같다.
+
         private void Time()
         {
             time = new Timer();
