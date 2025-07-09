@@ -9,8 +9,8 @@ namespace Raccoon
         public Rectangle rect;
         private Image acornImage;
         private int speed = 10;
-        private int direction;
-        public bool IsActive { get; set; }
+        private int direction; // 0 :왼쪽/ 1 :오른쪽
+        public bool IsActive { get; set; } // 도토리 활성화
         private int startX; // 도토리의 시작 X 위치
         private const int MAX_ATTACK_DISTANCE = 300; // 최대 공격 거리
 
@@ -25,7 +25,7 @@ namespace Raccoon
 
         public void action(Enemy enemy)
         {
-            // 1. 도토리 이동 로직 (기존 Move() 내용)
+            // 1. 도토리 이동 로직
             if (direction == 0) // 왼쪽으로 이동
             {
                 rect.X -= speed;
@@ -35,7 +35,7 @@ namespace Raccoon
                 rect.X += speed;
             }
 
-            // 2. 비활성화 조건 (기존 Move() 및 거리/시간 제한 내용)
+            // 2. 비활성화 조건
             // 화면을 벗어나면 비활성화
             if (rect.X < -rect.Width || rect.X > 800)
             {
@@ -69,7 +69,7 @@ namespace Raccoon
                 }
             }
         }
-
+        // 도토리 그리기
         public void Draw(Graphics g)
         {
             if (IsActive)

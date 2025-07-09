@@ -356,7 +356,7 @@ namespace Raccoon
 
         public Point GetAttackPosition()
         {
-            // 도토리가 캐릭터의 중앙에서 발사되도록 위치 조정
+            // 도토리가 캐릭터의 중앙에서 발사되도록
             if (dir == 0) // 왼쪽
             {
                 return new Point(chRect.X, chRect.Y + chRect.Height / 2 - 10); // 도토리 Y 위치 조정
