@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -14,10 +15,10 @@ namespace Raccoon
         int x1;
         Bitmap[] bitmap = new Bitmap[4];
         Bitmap scret;
-        Rectangle[] enemyRect = new Rectangle[3];
+        public Rectangle[] enemyRect = new Rectangle[3]; // 일반 적 3마리
         Rectangle[] scretRect = new Rectangle[4];
         Rectangle deletRect = new Rectangle(0, 0, 0, 0);
-        Rectangle scretPo, scorePo, scretColRect;        
+        public Rectangle scretPo, scorePo, scretColRect;
         public bool right, left, right1, left1, gameOver, mode, mode1, twinkle, respone, scoreAni;
         int time = 0;
         int time1 = 0;
@@ -28,12 +29,30 @@ namespace Raccoon
         public int score = 0;
         Font font;
         PrivateFontCollection privateFonts;
+        private int[] enemyHP = new int[4];
+        private const int INITIAL_ENEMY_HP = 1;
+
 
         public Enemy()
         {
             yRandom();
             createScret();
             createFont();
+            InitializeEnemyHP();
+        }
+
+        void InitializeEnemyHP()
+        {
+            for (int i = 0; i < enemyHP.Length; i++) // enemyHP 배열의 모든 요소 초기화
+            {
+                enemyHP[i] = INITIAL_ENEMY_HP;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                enemyRect[i] = new Rectangle(0, 0, 0, 0);
+            }
+            scretColRect = new Rectangle(0, 0, 0, 0);
         }
 
         public void reSet()
@@ -47,6 +66,7 @@ namespace Raccoon
             respone = false;
             mode = false;
             gameOver = false;
+            InitializeEnemyHP();
         }
 
         void createFont()
@@ -56,7 +76,7 @@ namespace Raccoon
             font = new Font(privateFonts.Families[0], 10f, FontStyle.Regular);
         }
 
-        void createScret() //비밀항아리 아이템을 그려줄 영역
+        void createScret()
         {
             scret = Properties.Resources.scretItem;
             scretRect[0] = new Rectangle(450, 445, 35, 35);
@@ -65,7 +85,7 @@ namespace Raccoon
             scretRect[3] = new Rectangle(680, 157, 35, 35);
         }
 
-        void yRandom() //적으로 사용될 이미지 불러오기, 적이 위치할 y좌표를 중복없이 랜덤으로 생성
+        void yRandom()
         {
             bitmap[0] = Properties.Resources.rightEnemy;
             bitmap[1] = Properties.Resources.rightEnemy1;
@@ -76,35 +96,58 @@ namespace Raccoon
             baseY[2] = 156;
             for (int i = 0; i < 3; i++)
             {
-                temp[i] = rand.Next(3);           
-                for (int j = 0; j < i; j++)   
-                    if (temp[i] == temp[j]) i--;  //앞과 뒤의 숫자가 같으면 i를 한번 감소시킴으로서 상위 for문을 한번더 실행시킴
+                temp[i] = rand.Next(3);
+                for (int j = 0; j < i; j++)
+                    if (temp[i] == temp[j]) i--;
             }
-
-
         }
 
         public void draw(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+
             for (int i = 0; i < 4; i++)
-                g.DrawImage(scret, scretRect[i], new Rectangle(0, 0, 35, 35), GraphicsUnit.Pixel);  //비빌항아리 아이템을 그려줌
+            {
+                if (scretRect[i] != deletRect)
+                {
+                    g.DrawImage(scret, scretRect[i], new Rectangle(0, 0, 35, 35), GraphicsUnit.Pixel);
+                }
+
+            }
+
             for (int i = 0; i < 3; i++)
             {
-                g.DrawImage(bitmap[i], x, baseY[temp[i]]);     //temp의 좌표에 적을 그림, 
-                enemyRect[i] = new Rectangle(x + 5, baseY[temp[i]]+10, 25, 20);  //적의 충돌범위 
-                //g.DrawRectangle(new Pen(Brushes.Red), enemyRect[i]);
+                // 일반 적이 죽지 않았을 때만 그림 (enemyHP[i] > 0으로 확인)
+                if (enemyHP[i] > 0)
+                {
+                    g.DrawImage(bitmap[i], x, baseY[temp[i]]);
+                    enemyRect[i] = new Rectangle(x + 5, baseY[temp[i]] + 10, 25, 20);
+                }
+                else
+                {
+                    enemyRect[i] = deletRect; // 죽은 적은 충돌 범위도 제거
+                }
             }
-            if (mode && !twinkle)     //twinkle을 true flase로 게속 바꿔줌으로서 비밀항아리에서 나온 적과는 일정시간동안 충돌하지않는다는걸보여줌
+
+            // 비밀 항아리 적이 있고, 깜박이지 않으며, 죽지 않았을 때만 그림 (enemyHP[3] > 0으로 확인)
+            if (mode && !twinkle && enemyHP[3] > 0)
+            {
                 g.DrawImage(bitmap[3], x1, scretPo.Top);
-            if (scoreAni)    //socreAni가 true일 동안만 비밀항아리 아이템의 점수를 보여줌
+            }
+            else if (mode && enemyHP[3] <= 0)
+            {
+                scretColRect = deletRect;
+            }
+
+            if (scoreAni)
+            {
                 g.DrawString("1000", font, Brushes.White, scorePo.Left, scorePo.Top);
-            //g.DrawRectangle(new Pen(Brushes.Red), scretColRect);
+            }
         }
 
         public void move(Rectangle chRect)
         {
-            if (x <= 51)  
+            if (x <= 51)
             {
                 right = true;
                 left = false;
@@ -114,20 +157,29 @@ namespace Raccoon
                 right = false;
                 left = true;
             }
-            if (right)  //right가 true면 적은 우측으로이동
+            if (right)
                 x++;
-            if (left)  //left가 true면 적은 좌측으로 이동
+            if (left)
                 x--;
 
-            if (mode)  //항아리에서 적이나오게되면 true가됨
+            if (mode)
             {
-                scretColRect = new Rectangle(x1 + 5, scretPo.Top+10, 25, 25);
-                if (!mode1)  //처음에 적이나오면 우측으로 감
+                // 비밀 항아리 적이 살아있을 때만 충돌 영역 업데이트 (enemyHP[3] > 0으로 확인)
+                if (enemyHP[3] > 0)
+                {
+                    scretColRect = new Rectangle(x1 + 5, scretPo.Top + 10, 25, 25);
+                }
+                else
+                {
+                    scretColRect = deletRect; // 죽은 적은 충돌 범위 제거
+                }
+
+                if (!mode1)
                     x1++;
-                if (x1 >= 690)    //항아리에서 나온적이 우측끝에 도달하면 mode1은 false
+                if (x1 >= 690)
                     mode1 = true;
 
-                if (x1 <= 51 && mode1) 
+                if (x1 <= 51 && mode1)
                 {
                     right1 = true;
                     left1 = false;
@@ -137,52 +189,55 @@ namespace Raccoon
                     right1 = false;
                     left1 = true;
                 }
-                if (right1)   //right1이 true면 적은 우측으로이동
+                if (right1)
                     x1++;
-                if (left1)   //left1이 true면 적은 좌측으로 이동
-                    x1--;                
+                if (left1)
+                    x1--;
             }
-           
+
             for (int i = 0; i < 3; i++)
             {
-                if (chRect.IntersectsWith(enemyRect[i]))  //캐릭터랑 적이랑 부딪힐때
+                // 일반 적이 살아있을 때만 캐릭터와의 충돌 검사 (enemyHP[i] > 0으로 확인)
+                if (enemyHP[i] > 0 && chRect.IntersectsWith(enemyRect[i]))
                     gameOver = true;
             }
-            if (mode && chRect.IntersectsWith(scretColRect) && respone)   //캐릭터랑 비밀항아리에서 나온 적이랑 부딪힐때
+            // 비밀 항아리 적이 살아있을 때만 캐릭터와의 충돌 검사 (enemyHP[3] > 0으로 확인)
+            if (mode && enemyHP[3] > 0 && chRect.IntersectsWith(scretColRect) && respone)
                 gameOver = true;
 
-            ani();           
-            screteCol(chRect);      //비밀항아리와 캐릭터의 충돌함수
-        }        
+            ani();
+            screteCol(chRect);
+        }
 
         void screteCol(Rectangle chRect)
         {
             for (int i = 0; i < 4; i++)
             {
-                if (chRect.IntersectsWith(scretRect[i])) //캐릭터와 비밀항아리가 충돌했을때
+                if (scretRect[i] != deletRect && chRect.IntersectsWith(scretRect[i]))
                 {
-                    scretRand = rand.Next(2);  //0과1둘중에 하나가 생성되는 난수를 만들어줌
-                    if (scretRand == 0 && !mode)  //0이면, 즉 2분의1확률로 적이나옴 
+                    scretRand = rand.Next(2);
+                    if (scretRand == 0 && !mode)
                     {
-                        mode = true;            //mode를 true로 바꿈으로써 항아리와 충돌시 적이 나오지 않게설정
-                        scretPo = scretRect[i];  //충돌한 항아리의 좌표를 scretPo에 저장
-                        x1 = scretPo.Left;     //충돌한 항아리의 좌측끝의 좌표를 x1에 저장
+                        mode = true;
+                        scretPo = scretRect[i];
+                        x1 = scretPo.Left;
+                        enemyHP[3] = INITIAL_ENEMY_HP; // 비밀 항아리 적 생성 시 체력 초기화
                     }
-                    else       //비밀항아리에서 적이 나오지 않을시에는 1000점 획득
-                    { 
+                    else
+                    {
                         scoreAni = true;
                         score += 1000;
                         scorePo = scretRect[i];
                     }
-                    scretRect[i] = deletRect;  //충돌한 비밀항아리의 영역전체를 0으로설정함으로써 없앰
+                    scretRect[i] = deletRect;
                 }
             }
         }
-     
+
         void ani()
         {
             time++;
-            if (right)     //적이 우측으로 이동시 보여주는애니
+            if (right)
             {
                 if (time > 3)
                 {
@@ -198,39 +253,39 @@ namespace Raccoon
                     time = 0;
                 }
             }
-            if (left)   //적이 좌측으로 이동시 보여주는애니
+            if (left)
             {
                 if (time > 3)
                 {
-                    bitmap[0] = Properties.Resources.leftEnemy1_1_;     //2층에 있는 적의 첫번째 애니
-                    bitmap[1] = Properties.Resources.leftEnemy_1_;    //3층에 있는 적의 첫번째 애니
-                    bitmap[2] = Properties.Resources.leftEnemy_1_;   //5층에있는 적의 첫번째 애니
+                    bitmap[0] = Properties.Resources.leftEnemy1_1_;
+                    bitmap[1] = Properties.Resources.leftEnemy_1_;
+                    bitmap[2] = Properties.Resources.leftEnemy_1_;
                 }
                 if (time > 6)
                 {
-                    bitmap[0] = Properties.Resources.leftEnemy;   //2층에 있는 적의 두번째 애니
-                    bitmap[1] = Properties.Resources.leftEnemy1;  //3층에 있는 적의 두번째 애니
-                    bitmap[2] = Properties.Resources.leftEnemy1;  //5층에있는 적의 두번째 애니
+                    bitmap[0] = Properties.Resources.leftEnemy;
+                    bitmap[1] = Properties.Resources.leftEnemy1;
+                    bitmap[2] = Properties.Resources.leftEnemy1;
                     time = 0;
                 }
             }
 
-            if(mode)   //비밀항아리와 충돌했을때 나온 적의 애니
+            if (mode)
             {
                 time1++;
-                if (!mode1)  //처음 비밀항아리에서 나온적이 우측끝까지 가는동안 보여줄 애니
+                if (!mode1)
                 {
                     if (time1 > 3)
                         bitmap[3] = Properties.Resources.rightEnemy1_1_;
                     if (time1 > 6)
-                    { 
+                    {
                         bitmap[3] = Properties.Resources.rightEnemy;
                         time1 = 0;
                     }
-                }     
-                if(left1)  //비밀항아리에서 나온적이 좌측으로가는 애니
+                }
+                if (left1)
                 {
-                    if(time1 > 3)
+                    if (time1 > 3)
                         bitmap[3] = Properties.Resources.leftEnemy1_1_;
                     if (time1 > 6)
                     {
@@ -238,11 +293,11 @@ namespace Raccoon
                         time1 = 0;
                     }
                 }
-                if(right1)  //비밀항아리에서 나온적이 우측으로가는 애니
+                if (right1)
                 {
-                    if(time1 > 3)
+                    if (time1 > 3)
                         bitmap[3] = Properties.Resources.rightEnemy1_1_;
-                    if(time1 > 6)
+                    if (time1 > 6)
                     {
                         bitmap[3] = Properties.Resources.rightEnemy;
                         time1 = 0;
@@ -250,31 +305,59 @@ namespace Raccoon
                 }
                 time2++;
                 time3++;
-                if (time2 > 3 && time3 < 60)  
+                if (time2 > 3 && time3 < 60)
                     twinkle = true;
-                if (time2 > 6 && time3 < 60)  //비밀항아리에서 나온적을 일정시간동안 깜박거리게 해줌
+                if (time2 > 6 && time3 < 60)
                 {
                     twinkle = false;
                     time2 = 0;
                 }
-                if (time3 > 120)  //time3가 120이되면은 깜박거리는거와 무적시간을 없앰
+                if (time3 > 120)
                 {
                     twinkle = false;
                     respone = true;
                 }
-                
+
             }
 
-            if(scoreAni)
+            if (scoreAni)
             {
                 time4++;
-                if(time4 > 50)   //time4가 50이될동안만 획득한 아이템의 점수를 보여줌
+                if (time4 > 50)
                 {
                     scoreAni = false;
                     time4 = 0;
                 }
             }
+        }
 
+        public void TakeDamage(int enemyIndex)
+        {
+            if (enemyIndex >= 0 && enemyIndex < enemyHP.Length) // 유효한 인덱스 범위 확인
+            {
+                if (enemyHP[enemyIndex] > 0)
+                {
+                    enemyHP[enemyIndex]--; // 체력 감소
+                    if (enemyHP[enemyIndex] <= 0)
+                    {
+                        // 적이 죽었을 때 처리
+                        if (enemyIndex >= 0 && enemyIndex < 3) // 일반 적
+                        {
+                            enemyRect[enemyIndex] = deletRect; // 해당 적의 충돌 범위 제거
+                            score += 100; // 점수 획득
+                        }
+                        else if (enemyIndex == 3) // 비밀 항아리에서 나온 적
+                        {
+                            mode = false;
+                            mode1 = false;
+                            respone = false;
+                            time2 = 0;
+                            time3 = 0;
+                            score += 500;
+                        }
+                    }
+                }
+            }
         }
     }
 }

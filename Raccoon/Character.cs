@@ -12,8 +12,8 @@ namespace Raccoon
     public class Character
     {
         Bitmap leftSprites, rightSprites, ladderSprites, fallSpritess, jumpBit;
-        int x = 740;
-        float y = 534;
+        public int x = 740;
+        public float y = 534;
         int cState = 0;
         public bool jumpKey;
         int time = 0;
@@ -22,7 +22,7 @@ namespace Raccoon
         int rIndex = 0;
         int upIndex = 0;
         int fallIndex = 0;
-        int dir = 0;
+        public int dir = 0;
         int width, height;
         float baseY = 534;
         int jump = 0;
@@ -156,6 +156,7 @@ namespace Raccoon
             longJump = false;
             mode2 = true;
             playAni = false;
+            dir = 0;
         }
 
         private void jumping()
@@ -352,5 +353,19 @@ namespace Raccoon
                 mode = true;
             }
         }
+
+        public Point GetAttackPosition()
+        {
+            // 도토리가 캐릭터의 중앙에서 발사되도록 위치 조정
+            if (dir == 0) // 왼쪽
+            {
+                return new Point(chRect.X, chRect.Y + chRect.Height / 2 - 10); // 도토리 Y 위치 조정
+            }
+            else // 오른쪽
+            {
+                return new Point(chRect.Right - 20, chRect.Y + chRect.Height / 2 - 10); // 도토리 Y 위치 조정, 캐릭터 우측에서 시작
+            }
+        }
+
     }
 }
