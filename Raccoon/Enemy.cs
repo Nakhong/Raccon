@@ -29,9 +29,8 @@ namespace Raccoon
         public int score = 0;
         Font font;
         PrivateFontCollection privateFonts;
-        private int[] enemyHP = new int[4];
-        private const int INITIAL_ENEMY_HP = 1;
-
+        private int[] enemyHP = new int[4]; // 적 체력
+        private const int INITIAL_ENEMY_HP = 1; // 기본 체력
 
         public Enemy()
         {
@@ -47,12 +46,6 @@ namespace Raccoon
             {
                 enemyHP[i] = INITIAL_ENEMY_HP;
             }
-
-            for (int i = 0; i < 3; i++)
-            {
-                enemyRect[i] = new Rectangle(0, 0, 0, 0);
-            }
-            scretColRect = new Rectangle(0, 0, 0, 0);
         }
 
         public void reSet()
@@ -66,7 +59,7 @@ namespace Raccoon
             respone = false;
             mode = false;
             gameOver = false;
-            InitializeEnemyHP();
+            InitializeEnemyHP(); //체력 추가
         }
 
         void createFont()
@@ -330,7 +323,7 @@ namespace Raccoon
                 }
             }
         }
-
+        //공격 받은 적
         public void TakeDamage(int enemyIndex)
         {
             if (enemyIndex >= 0 && enemyIndex < enemyHP.Length) // 유효한 인덱스 범위 확인
@@ -348,12 +341,12 @@ namespace Raccoon
                         }
                         else if (enemyIndex == 3) // 비밀 항아리에서 나온 적
                         {
-                            mode = false;
-                            mode1 = false;
-                            respone = false;
-                            time2 = 0;
-                            time3 = 0;
-                            score += 500;
+                            mode = false; // 몬스터 비활성화
+                            mode1 = false; // 이동 방향
+                            respone = false; //무적시간
+                            time2 = 0; // 애니메이션/깜빡임 타이머
+                            time3 = 0; // 무적 시간
+                            score += 500; // 점수
                         }
                     }
                 }
