@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic; // 이 using 지시어를 추가하세요.
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;

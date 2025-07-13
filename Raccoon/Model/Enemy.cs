@@ -30,7 +30,7 @@ namespace Raccoon
         Font font;
         PrivateFontCollection privateFonts;
         private int[] enemyHP = new int[4]; // 적 체력
-        private const int INITIAL_ENEMY_HP = 1; // 기본 체력
+        private int INITIAL_ENEMY_HP = 1; // 기본 체력
 
         public Enemy()
         {
@@ -98,7 +98,6 @@ namespace Raccoon
         public void draw(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-
             for (int i = 0; i < 4; i++)
             {
                 if (scretRect[i] != deletRect)
@@ -202,7 +201,7 @@ namespace Raccoon
             screteCol(chRect);
         }
 
-        void screteCol(Rectangle chRect)
+        void screteCol(Rectangle chRect) //여기에 아이템 추가하기.
         {
             for (int i = 0; i < 4; i++)
             {
