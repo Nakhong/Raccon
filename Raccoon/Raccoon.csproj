@@ -55,6 +55,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Items.cs" />
     <Compile Include="Model\Obstruction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\BackGround2.bmp" />
+    <Content Include="Resources\speedUp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

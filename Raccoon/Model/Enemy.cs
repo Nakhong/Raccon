@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raccoon.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
@@ -31,7 +32,8 @@ namespace Raccoon
         PrivateFontCollection privateFonts;
         private int[] enemyHP = new int[4]; // 적 체력
         private int INITIAL_ENEMY_HP = 1; // 기본 체력
-
+        private List<Items> activeItems = new List<Items>(); // 현재 활성화된 아이템들을 담을 리스트
+    
         public Enemy()
         {
             yRandom();
@@ -105,6 +107,15 @@ namespace Raccoon
                     g.DrawImage(scret, scretRect[i], new Rectangle(0, 0, 35, 35), GraphicsUnit.Pixel);
                 }
 
+            }
+
+            // --- 아이템 그리기 ---
+            foreach (var item in activeItems)
+            {
+                if (item.IsActive)
+                {
+                    item.Draw(g);
+                }
             }
 
             for (int i = 0; i < 3; i++)
@@ -207,15 +218,19 @@ namespace Raccoon
             {
                 if (scretRect[i] != deletRect && chRect.IntersectsWith(scretRect[i]))
                 {
-                    scretRand = rand.Next(2);
+                    scretRand = rand.Next(3);
                     if (scretRand == 0 && !mode)
                     {
                         mode = true;
                         scretPo = scretRect[i];
                         x1 = scretPo.Left;
                         enemyHP[3] = INITIAL_ENEMY_HP; // 비밀 항아리 적 생성 시 체력 초기화
+                    }else if (scretRand == 1)
+                    {
+                        Items newItem = new Items(scretRect[i].X, scretRect[i].Y, Items.ItemType.SpeedUp); // 스피드업 아이템 생성
+                        activeItems.Add(newItem);
                     }
-                    else
+                    else if(scretRand == 2)
                     {
                         scoreAni = true;
                         score += 1000;
