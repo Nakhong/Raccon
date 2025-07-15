@@ -6,11 +6,34 @@ namespace Raccoon
 {
     public class Acorn
     {
-        public Rectangle rect;
+        private Rectangle rect;
+        public Rectangle _rect
+        {
+            get
+            {
+                return rect;
+            }
+            set
+            {
+                rect = value;
+            }
+        }
         private Image acornImage;
         private int speed = 10;
         private int direction; // 0 :왼쪽/ 1 :오른쪽
-        public bool IsActive { get; set; } // 도토리 활성화
+        private bool IsActive;
+        public bool _IsActive 
+        {
+            get 
+            {
+                return IsActive; 
+            }
+            set 
+            {
+                IsActive = value;
+            }
+        }
+
         private int startX; // 도토리의 시작 X 위치
         private const int MAX_ATTACK_DISTANCE = 300; // 최대 공격 거리
 
@@ -54,7 +77,7 @@ namespace Raccoon
                 // 일반 적과의 충돌
                 for (int j = 0; j < 3; j++)
                 {
-                    if (enemy.enemyRect[j] != new Rectangle(0, 0, 0, 0) && this.rect.IntersectsWith(enemy.enemyRect[j]))
+                    if (enemy._EnemyRect[j] != new Rectangle(0, 0, 0, 0) && this.rect.IntersectsWith(enemy._EnemyRect[j]))
                     {
                         enemy.TakeDamage(j);
                         this.IsActive = false; // 도토리 비활성화
@@ -62,7 +85,7 @@ namespace Raccoon
                     }
                 }
 
-                if (enemy.mode && !enemy.twinkle && enemy.scretColRect != new Rectangle(0, 0, 0, 0) && this.rect.IntersectsWith(enemy.scretColRect))
+                if (enemy._Mode && !enemy._Twinkle && enemy._ScretColRect != new Rectangle(0, 0, 0, 0) && this.rect.IntersectsWith(enemy._ScretColRect))
                 {
                     enemy.TakeDamage(3);
                     this.IsActive = false; // 도토리 비활성화

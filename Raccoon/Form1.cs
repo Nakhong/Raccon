@@ -35,10 +35,10 @@ namespace Raccoon
         private void timer(object sender, EventArgs e)
         {
             character.move();
-            character.ani(obstruction.gameover, enemy.gameOver);
-            obstruction.collision(character.chRect);
-            ui.addData(obstruction.score, enemy.score, obstruction.count);
-            enemy.move(character.chRect);
+            character.ani(obstruction._Gameover, enemy._GameOver);
+            obstruction.collision(character._ChRect);
+            ui.addData(obstruction._Score, enemy._Score, obstruction._Count);
+            enemy.move(character._ChRect);
             UpdateAcorns(); //도토리 업데이트
             Invalidate();
         }
@@ -74,17 +74,17 @@ namespace Raccoon
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)
-                character.State = 1;
+                character._State = 1;
             else if (e.KeyCode == Keys.Right)
-                character.State = 2;
+                character._State = 2;
             else if (e.KeyCode == Keys.Up)
-                character.State = 3;
+                character._State = 3;
             else if (e.KeyCode == Keys.Down)
-                character.State = 4;
-            else if (e.KeyCode == Keys.Space && character.Jump == 0 && !character.xStop && !character.jumpStop)
+                character._State = 4;
+            else if (e.KeyCode == Keys.Space && character._Jump == 0 && !character._XStop && !character._JumpStop)
             {
-                character.Jump++;
-                character.jumpKey = true;
+                character._Jump++;
+                character._JumpKey = true;
             }
             if (e.KeyCode == Keys.P)
                 stop = !stop;
@@ -102,7 +102,7 @@ namespace Raccoon
             if (e.KeyCode == Keys.Z && attackCooldown == 0) //도토리 공격 추가
             {
                 Point attackPos = character.GetAttackPosition();
-                Acorn newAcorn = new Acorn(attackPos.X, attackPos.Y, character.dir);
+                Acorn newAcorn = new Acorn(attackPos.X, attackPos.Y, character._Dir);
                 activeAcorns.Add(newAcorn); // 새 도토리를 리스트에 추가
                 attackCooldown = MAX_ATTACK_COOLDOWN; // 쿨다운 설정
             }
@@ -110,14 +110,14 @@ namespace Raccoon
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (character.State == 1 && e.KeyCode == Keys.Left)
-                character.State = 0;
-            if (character.State == 2 && e.KeyCode == Keys.Right)
-                character.State = 0;
-            if (character.State == 3 && e.KeyCode == Keys.Up)
-                character.State = 0;
-            if (character.State == 4 && e.KeyCode == Keys.Down)
-                character.State = 0;
+            if (character._State == 1 && e.KeyCode == Keys.Left)
+                character._State = 0;
+            if (character._State == 2 && e.KeyCode == Keys.Right)
+                character._State = 0;
+            if (character._State == 3 && e.KeyCode == Keys.Up)
+                character._State = 0;
+            if (character._State == 4 && e.KeyCode == Keys.Down)
+                character._State = 0;
         }
         //도토리 공격 업데이트
         private void UpdateAcorns()
@@ -127,7 +127,7 @@ namespace Raccoon
                 Acorn acorn = activeAcorns[i];
                 acorn.action(enemy);
 
-                if (!acorn.IsActive)
+                if (!acorn._IsActive)
                 {
                     activeAcorns.RemoveAt(i);
                 }

@@ -12,43 +12,123 @@ namespace Raccoon
     public class Character
     {
         Bitmap leftSprites, rightSprites, ladderSprites, fallSpritess, jumpBit;
-        public int x = 740;
-        public float y = 534;
+        private int x = 740;
+        public int _X
+        {
+            get
+            {
+                return x;
+            }
+            set
+            {
+                x = value;
+            }
+        }
+        private float y = 534;
+        public float _Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                y = value;
+            }
+        }
+        private bool jumpKey;
+        public bool _JumpKey
+        {
+            get
+            {
+                return jumpKey;
+            }
+            set
+            {
+                jumpKey = value;
+            }
+        }
+        private int dir = 0;
+        public int _Dir
+        {
+            get
+            {
+                return dir;
+            }
+            set
+            {
+                dir = value;
+            }
+        }
+        private Rectangle chRect;
+        public Rectangle _ChRect
+        {
+            get
+            {
+                return chRect;
+            }
+            set
+            {
+                chRect = value;
+            }
+        }
+
         int cState = 0;
-        public bool jumpKey;
+        public int _State
+        {
+            get { return cState; }
+            set { cState = value; }
+        }
+        int jump = 0;
+        public int _Jump
+        {
+            get { return jump; }
+            set { jump = value; }
+        }
+
+        private bool xStop;
+        public bool _XStop
+        {
+            get
+            {
+                return xStop;
+            }
+            set
+            {
+                xStop = value;
+            }
+        }
+        private bool jumpStop;
+        public bool _JumpStop
+        {
+            get
+            {
+                return jumpStop;
+            }
+            set
+            {
+                jumpStop = value;
+            }
+        }
         int time = 0;
         int fallTime = 0;
         int lIndex = 0;
         int rIndex = 0;
         int upIndex = 0;
         int fallIndex = 0;
-        public int dir = 0;
         int width, height;
         float baseY = 534;
-        int jump = 0;
         int xrLimit = 752;
         int xlLimit = 50;
         int xjump = 2;
         float g = 0.175f;
         float speed = 2.5f;
         int jumpTime = 0;
-        public bool xStop, lAni, rAni, mode, mode1, mode2, mode3, jumpStop, longJump, fall, fall1, playAni, ladderUp;
-        public Rectangle chRect;
+        bool lAni, rAni, mode, mode1, mode2, mode3, longJump, fall, fall1, playAni, ladderUp;
+
         Rectangle[] ladder = new Rectangle[5];
         Rectangle[] rectangles = new Rectangle[7];
         Rectangle[] ladders = new Rectangle[3];
-
-        public int State
-        {
-            get { return cState; }
-            set { cState = value; }
-        }
-
-        public int Jump
-        {
-            get { return jump; }
-            set { jump = value; }
-        }
 
         public Character()
         {

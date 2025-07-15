@@ -16,18 +16,91 @@ namespace Raccoon
         int x1;
         Bitmap[] bitmap = new Bitmap[4];
         Bitmap scret;
-        public Rectangle[] enemyRect = new Rectangle[3]; // 일반 적 3마리
+        private Rectangle[] enemyRect = new Rectangle[3]; // 일반 적 3마리
+        public Rectangle[] _EnemyRect
+        {
+            get
+            {
+                return enemyRect;
+            }
+            set
+            {
+                enemyRect = value;
+            }
+        }
+        private int score = 0;
+        public int _Score
+        {
+            get
+            {
+                return score;
+            }
+            set
+            {
+                score = value;
+            }
+        }
+        private bool mode;
+        public bool _Mode
+        {
+            get
+            {
+                return mode;
+            }
+            set
+            {
+                mode = value;
+            }
+        }
+        private bool twinkle;
+        public bool _Twinkle
+        {
+            get
+            {
+                return twinkle;
+            }
+            set
+            {
+                twinkle = value;
+            }
+        }
+        private bool gameOver;
+        public bool _GameOver
+        {
+            get
+            {
+                return gameOver;
+            }
+            set
+            {
+                gameOver = value;
+            }
+        }
+        private Rectangle scretColRect; // 일반 적 3마리
+        public Rectangle _ScretColRect
+        {
+            get
+            {
+                return scretColRect;
+            }
+            set
+            {
+                scretColRect = value;
+            }
+        }
+
         Rectangle[] scretRect = new Rectangle[4];
         Rectangle deletRect = new Rectangle(0, 0, 0, 0);
-        public Rectangle scretPo, scorePo, scretColRect;
-        public bool right, left, right1, left1, gameOver, mode, mode1, twinkle, respone, scoreAni;
+        Rectangle scretPo, scorePo;
+        
+        bool right, left, right1, left1,  mode1, respone, scoreAni;
         int time = 0;
         int time1 = 0;
         int time2 = 0;
         int time3 = 0;
         int time4 = 0;
         int scretRand;
-        public int score = 0;
+
         Font font;
         PrivateFontCollection privateFonts;
         private int[] enemyHP = new int[4]; // 적 체력
@@ -112,7 +185,7 @@ namespace Raccoon
             // --- 아이템 그리기 ---
             foreach (var item in activeItems)
             {
-                if (item.IsActive)
+                if (item._IsActive)
                 {
                     item.Draw(g);
                 }

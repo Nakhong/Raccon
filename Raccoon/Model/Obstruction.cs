@@ -8,7 +8,43 @@ namespace Raccoon
 {
     public class Obstruction
     {
-        public bool gameover, eat, scoreAni;
+        private bool eat, scoreAni;
+        private bool gameover;
+        public bool _Gameover
+        {
+            get
+            {
+                return gameover;
+            }
+            set
+            {
+                gameover = value;
+            }
+        }
+        private int count = 0;
+        public int _Count
+        {
+            get
+            {
+                return count;
+            }
+            set
+            {
+                count = value;
+            }
+        }
+        private int score = 0;
+        public int _Score
+        {
+            get
+            {
+                return score;
+            }
+            set
+            {
+                score = value;
+            }
+        }
         Rectangle[] hole = new Rectangle[6];
         Rectangle[] gimlets = new Rectangle[13];
         Rectangle[] gimletsCol = new Rectangle[13];
@@ -33,8 +69,6 @@ namespace Raccoon
         int[] randBanana = new int[4];
         int yCount = 0;
         int y = 434;
-        public int count = 0;
-        public int score = 0;
         int scoreData;
         int time = 0;
         Font font;
