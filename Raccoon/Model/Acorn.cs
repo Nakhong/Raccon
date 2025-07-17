@@ -4,9 +4,12 @@ using System.Windows.Forms;
 
 namespace Raccoon
 {
+    /// <summary>
+    /// 도토리 관련 클래스
+    /// </summary>
     public class Acorn
     {
-        private Rectangle rect;
+        private Rectangle rect; // 도토리 위치 크기
         public Rectangle _rect
         {
             get
@@ -18,10 +21,10 @@ namespace Raccoon
                 rect = value;
             }
         }
-        private Image acornImage;
-        private int speed = 10;
-        private int direction; // 0 :왼쪽/ 1 :오른쪽
-        private bool IsActive;
+        private Image acornImage; // 이미지
+        private int speed = 10; // 날아가는 속도
+        private int direction; // 방향 (0 :왼쪽/ 1 :오른쪽)
+        private bool IsActive; // 활성화 체크
         public bool _IsActive 
         {
             get 
@@ -36,7 +39,12 @@ namespace Raccoon
 
         private int startX; // 도토리의 시작 X 위치
         private const int MAX_ATTACK_DISTANCE = 300; // 최대 공격 거리
-
+        /// <summary>
+        /// 도토리 생성자
+        /// </summary>
+        /// <param name="startX">도토리 초기 X 값</param>
+        /// <param name="startY">도토리 초기 Y 값</param>
+        /// <param name="dir">도토리 방향</param>
         public Acorn(int startX, float startY, int dir)
         {
             acornImage = Properties.Resources.Acorn;
@@ -45,7 +53,10 @@ namespace Raccoon
             IsActive = true;
             this.startX = startX; // 시작 X 위치 저장
         }
-
+        /// <summary>
+        /// 도토리의 이동, 적 충돌, 데미지, 사거리 메서드
+        /// </summary>
+        /// <param name="enemy"></param>
         public void action(Enemy enemy)
         {
             // 1. 도토리 이동 로직
@@ -92,7 +103,10 @@ namespace Raccoon
                 }
             }
         }
-        // 도토리 그리기
+        /// <summary>
+        /// 도토리 활성화 상태일 경우, 게임 화면에 도토리 그리기
+        /// </summary>
+        /// <param name="g"></param>
         public void Draw(Graphics g)
         {
             if (IsActive)

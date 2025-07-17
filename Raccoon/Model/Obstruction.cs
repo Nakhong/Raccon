@@ -6,11 +6,14 @@ using System.Drawing.Text;
 
 namespace Raccoon
 {
+    /// <summary>
+    /// 장애물 및 아이템 관련 클래스
+    /// </summary>
     public class Obstruction
     {
         private bool eat, scoreAni;
         private bool gameover;
-        public bool _Gameover
+        public bool _Gameover // 게임 끝인지
         {
             get
             {
@@ -21,7 +24,7 @@ namespace Raccoon
                 gameover = value;
             }
         }
-        private int count = 0;
+        private int count = 0; // 아이템 먹었을 때 상승 시킴. 아이템그려주기 위해서
         public int _Count
         {
             get
@@ -33,7 +36,7 @@ namespace Raccoon
                 count = value;
             }
         }
-        private int score = 0;
+        private int score = 0; // 현재 점수
         public int _Score
         {
             get
@@ -45,35 +48,38 @@ namespace Raccoon
                 score = value;
             }
         }
-        Rectangle[] hole = new Rectangle[6];
-        Rectangle[] gimlets = new Rectangle[13];
-        Rectangle[] gimletsCol = new Rectangle[13];
-        Rectangle[] itemApple = new Rectangle[6];
-        Rectangle[] itemBanana = new Rectangle[4];
-        Rectangle[] rectangles = new Rectangle[10];
-        Rectangle chBottom;
-        Rectangle delete= new Rectangle(0, 0, 0, 0);
-        Rectangle scorePo;
-        Bitmap gimlet, apple, banana;
-        Bitmap[] bitmap = new Bitmap[10];
-        Random rand = new Random();
-        int[] baseY = new int[13];
-        int[] min = new int[13];
-        int[] max = new int[13];
-        int[] minApple = new int[6];
-        int[] maxApple = new int[6];
-        int[] minBanana = new int[4];
-        int[] maxBanana = new int[4];        
-        int[] randX = new int[13];
-        int[] randApple = new int[6];
-        int[] randBanana = new int[4];
-        int yCount = 0;
-        int y = 434;
-        int scoreData;
-        int time = 0;
-        Font font;
-        PrivateFontCollection privateFonts;
+        Rectangle[] hole = new Rectangle[6]; // 맵에서 낭떠러지 영역
+        Rectangle[] gimlets = new Rectangle[13]; // 장애물 영역
+        Rectangle[] gimletsCol = new Rectangle[13]; //장애물 충돌 영역
+        Rectangle[] itemApple = new Rectangle[6]; // 사과 아이템 영역
+        Rectangle[] itemBanana = new Rectangle[4]; // 바나나 아이템 영역
+        Rectangle[] rectangles = new Rectangle[10]; // 획득한 아이템 그려주는 영역
+        Rectangle chBottom; //충돌 검사 영역
+        Rectangle delete= new Rectangle(0, 0, 0, 0); // 영역 삭제
+        Rectangle scorePo;  // 점수 표시될 위치
+        Bitmap gimlet, apple, banana; // 이미지
+        Bitmap[] bitmap = new Bitmap[10]; // 이미지 저장
+        Random rand = new Random(); // 랜덤 아이템
+        int[] baseY = new int[13]; // 기본 y좌표
+        int[] min = new int[13]; // 최소 좌표
+        int[] max = new int[13]; // 최대 좌표
+        int[] minApple = new int[6]; // 사과 최소 좌표
+        int[] maxApple = new int[6]; // 사과 최대 좌표
+        int[] minBanana = new int[4]; // 바나나 최소 좌표
+        int[] maxBanana = new int[4];   // 바나나 최대 좌표
+        int[] randX = new int[13]; // 랜덤 x 좌표
+        int[] randApple = new int[6]; // 사과 랜덤 좌표
+        int[] randBanana = new int[4]; // 바나나 랜덤 좌표
+        int yCount = 0; // 모든 y좌표 카운트
+        int y = 434; // y 좌표
+        int scoreData; // 획득한 아이템의 점수 값
+        int time = 0; // 시간 카운터
+        Font font; // 폰트
+        PrivateFontCollection privateFonts; // 사용자 정의 글꼴 로드 및 관리
 
+        /// <summary>
+        /// Object 생성자
+        /// </summary>
         public Obstruction()
         {
             createHole();
@@ -82,7 +88,9 @@ namespace Raccoon
             itemUiList();
             createFont();
         }
-
+        /// <summary>
+        /// 초기화
+        /// </summary>
         public void reSet()
         {
             yCount = 0;
@@ -94,15 +102,19 @@ namespace Raccoon
             crateItem();
             itemUiList();          
         }
-
-        void createFont()  //폰트설정
+        /// <summary>
+        /// 폰트 설정
+        /// </summary>
+        void createFont()
         {
             privateFonts = new PrivateFontCollection();
             privateFonts.AddFontFile("neoletters.ttf");
             font = new Font(privateFonts.Families[0], 10f, FontStyle.Regular);
         }
-
-        void itemUiList()  //획득한 아이템을 보여줄 영역
+        /// <summary>
+        /// 획득한 아이템을 보여줄 영역
+        /// </summary>
+        void itemUiList()
         {
             for (int i = 0; i < 10; i++)
             {
@@ -110,7 +122,9 @@ namespace Raccoon
                 y -= 30;
             }
         }
-
+        /// <summary>
+        /// 장애물의 배치 범위
+        /// </summary>
         void createGimlet()
         {
             gimlet = Properties.Resources.gimlet;            
@@ -158,7 +172,9 @@ namespace Raccoon
             }          
 
         }
-
+        /// <summary>
+        /// 아이템 배치 범위
+        /// </summary>
         void crateItem()
         {
             minApple[0] = 560;
@@ -207,8 +223,10 @@ namespace Raccoon
                 itemBanana[i] = new Rectangle(randBanana[i], baseY[yCount] + 5, 20, 20);                
             }
         }
-
-        void createHole()  //낭떠러지 영역 생성
+        /// <summary>
+        /// 맵에 낭떠러지 영역 생성
+        /// </summary>
+        void createHole()
         {
             hole[0] = new Rectangle(249, 476, 12, 21);
             hole[1] = new Rectangle(512, 380, 12, 21);
@@ -218,6 +236,10 @@ namespace Raccoon
             hole[5] = new Rectangle(439, 187, 14, 21);
         }
 
+        /// <summary>
+        /// Object들 그려주는 이벤트
+        /// </summary>
+        /// <param name="e"></param>
         public void draw(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -247,7 +269,10 @@ namespace Raccoon
             //g.DrawRectangle(new Pen(Brushes.Red), chBottom);
 
         }
-
+        /// <summary>
+        /// 충돌에 대한 이벤트 계산
+        /// </summary>
+        /// <param name="chRect"></param>
         public void collision(Rectangle chRect)
         {
             chBottom = new Rectangle(chRect.Left, chRect.Top , 20, 30);

@@ -9,10 +9,13 @@ using System.Windows.Forms;
 
 namespace Raccoon
 {
+    /// <summary>
+    /// 캐릭터 관련 클래스
+    /// </summary>
     public class Character
     {
         Bitmap leftSprites, rightSprites, ladderSprites, fallSpritess, jumpBit;
-        private int x = 740;
+        private int x = 740; // 캐릭터 현재 X 좌표
         public int _X
         {
             get
@@ -24,7 +27,7 @@ namespace Raccoon
                 x = value;
             }
         }
-        private float y = 534;
+        private float y = 534; // 캐릭터 현재 Y 좌표
         public float _Y
         {
             get
@@ -36,7 +39,7 @@ namespace Raccoon
                 y = value;
             }
         }
-        private bool jumpKey;
+        private bool jumpKey; //점프 키 눌림 여부
         public bool _JumpKey
         {
             get
@@ -48,7 +51,7 @@ namespace Raccoon
                 jumpKey = value;
             }
         }
-        private int dir = 0;
+        private int dir = 0;// 캐릭터 방향 (0 : 왼쪽, 1 : 오른쪽)
         public int _Dir
         {
             get
@@ -60,7 +63,7 @@ namespace Raccoon
                 dir = value;
             }
         }
-        private Rectangle chRect;
+        private Rectangle chRect; // 캐릭터 충돌 영역
         public Rectangle _ChRect
         {
             get
@@ -73,20 +76,20 @@ namespace Raccoon
             }
         }
 
-        int cState = 0;
+        int cState = 0; // 캐릭터 현재 상태(1 : 왼쪽 2 : 오른쪽 3: 사다리 위로 4: 사다리 아래로)
         public int _State
         {
             get { return cState; }
             set { cState = value; }
         }
-        int jump = 0;
+        int jump = 0; // 점프 상태(0 : 착지 1 : 점프 중)
         public int _Jump
         {
             get { return jump; }
             set { jump = value; }
         }
 
-        private bool xStop;
+        private bool xStop; // X축 이동 멈출지
         public bool _XStop
         {
             get
@@ -98,7 +101,7 @@ namespace Raccoon
                 xStop = value;
             }
         }
-        private bool jumpStop;
+        private bool jumpStop; // 점프 막을지
         public bool _JumpStop
         {
             get
@@ -110,32 +113,47 @@ namespace Raccoon
                 jumpStop = value;
             }
         }
-        int time = 0;
-        int fallTime = 0;
-        int lIndex = 0;
-        int rIndex = 0;
-        int upIndex = 0;
-        int fallIndex = 0;
-        int width, height;
-        float baseY = 534;
-        int xrLimit = 752;
-        int xlLimit = 50;
-        int xjump = 2;
-        float g = 0.175f;
-        float speed = 2.5f;
-        int jumpTime = 0;
+        int time = 0; // 타이머
+        int fallTime = 0; // 낙하 타이머
+        int lIndex = 0; // 왼쪽 이동 인덱스
+        int rIndex = 0; // 오른쪽 이동 인덱스
+        int upIndex = 0; // 사다리 오르기 인덱스
+        int fallIndex = 0; // 낙하 인덱스
+        int width, height; // 캐릭터 가로 세로 값
+        float baseY = 534; // 현재 서 있는 지면 Y 좌표
+        int xrLimit = 752; // 오른쪽 이동 제한 X 좌표
+        int xlLimit = 50; // 왼쪽 이동 제한 Y 좌표
+        int xjump = 2; // 점프 시 X축 속도
+        float g = 0.175f; // 중력 가속도
+        float speed = 2.5f; // 점프 스피드
+        int jumpTime = 0; // 점프 시간
         bool lAni, rAni, mode, mode1, mode2, mode3, longJump, fall, fall1, playAni, ladderUp;
+        // lAni: 왼쪽 애니메이션 활성화
+        // rAni: 오른쪽 애니메이션 활성화
+        // mode: Y 좌표 도달 시(사다리)
+        // mode1: 벽에 부딪혔을 때 점프 동작 제어(벽에 붙지 않게)
+        // mode2: 점프 끝났을 때 점프 관련 변수 초기화
+        // mode3: 롱점프 중인지
+        // longJump: 롱점프 활성화 여부(방향키 + 스페이스바)
+        // fall: 장애물 충돌로 인한 낙하
+        // fall1: 적과의 충돌로 인한 낙하
+        // playAni: 낙하 애니메이션 재생
+        // ladderUp: 사다리 올라가는 중인지
+        Rectangle[] ladder = new Rectangle[5]; // 사다리 영역 저장
+        Rectangle[] rectangles = new Rectangle[7]; // 이동 스프라이트의 잘라낼 영역 저장
+        Rectangle[] ladders = new Rectangle[3]; // 사다리 오르기 스프라이트의 잘라낼 영역 저장
 
-        Rectangle[] ladder = new Rectangle[5];
-        Rectangle[] rectangles = new Rectangle[7];
-        Rectangle[] ladders = new Rectangle[3];
-
+        /// <summary>
+        /// 캐릭터 생성자
+        /// </summary>
         public Character()
         {
             arrBit();
             createLadder();
         }
-
+        /// <summary>
+        /// 스프라이트 시트에 애니메이션 프레임을 잘라낼 영역 설정
+        /// </summary>
         private void arrBit()
         {
             leftSprites = Properties.Resources.CharterLeftSprite;
@@ -150,7 +168,9 @@ namespace Raccoon
             for (int i = 0; i < 3; i++)  //캐릭터 사다리올라가는 스프라이트를 자를영역 생성
                 ladders[i] = new Rectangle(width * i, 0, width, height);
         }
-
+        /// <summary>
+        /// 사다리 영역 생성
+        /// </summary>
         private void createLadder()  //사다리 범위 생성
         {
             ladder[0] = new Rectangle(410, 476, 24, 96);
@@ -159,7 +179,11 @@ namespace Raccoon
             ladder[3] = new Rectangle(387, 189, 22, 96);
             ladder[4] = new Rectangle(650, 189, 22, 96);
         }
-
+        /// <summary>
+        /// 캐릭터 애니메이션 메서드
+        /// </summary>
+        /// <param name="gameover"></param>
+        /// <param name="gameover1"></param>
         public void ani(bool gameover, bool gameover1)  //캐릭터 좌우 이동 애니, 사다리 올라가는 애니, 게임오버시 추락하는 애니
         {
             fall = gameover;        //장애물과 충돌했을시 gameover이 true
@@ -222,7 +246,9 @@ namespace Raccoon
 
             jumping();
         }
-
+        /// <summary>
+        /// 초기화 메서드
+        /// </summary>
         public void reSet()     // 다시시작 버튼 클릭시 초기값으로 다시설정하는 함수
         {
             x = 740;
@@ -238,7 +264,9 @@ namespace Raccoon
             playAni = false;
             dir = 0;
         }
-
+        /// <summary>
+        /// 캐릭터 점프 및 롱점프 메서드
+        /// </summary>
         private void jumping()
         {
             if (jumpKey && (cState == 1 || cState == 2) && !mode3)   //좌,우 화살표키와 스페이스 를 같이누르면 해당변수 true로 바꿈
@@ -347,7 +375,10 @@ namespace Raccoon
             else
                 mode1 = false;
         }
-
+        /// <summary>
+        /// 그리기 메서드
+        /// </summary>
+        /// <param name="e"></param>
         public void draw(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -370,7 +401,9 @@ namespace Raccoon
                 g.DrawImage(fallSpritess, new Rectangle(x, (int)y, 40, 40), rectangles[fallIndex], GraphicsUnit.Pixel);
 
         }
-
+        /// <summary>
+        /// 캐릭터 현재 상태에 따라 상태 갱신 메서드
+        /// </summary>
         public void move()
         {
             if (cState == 1 && x > 51 && !xStop && !mode1 && !mode3)  // 좌로이동
@@ -424,7 +457,9 @@ namespace Raccoon
 
             chRect = new Rectangle(x + 10, (int)y, 15, 40); //캐릭터의 충돌범위
         }
-
+        /// <summary>
+        /// 사다리 위/아래 도달 시 지면 설정 메서드
+        /// </summary>
         public void tempY()
         {
             if (!mode)
@@ -433,7 +468,10 @@ namespace Raccoon
                 mode = true;
             }
         }
-
+        /// <summary>
+        /// 도토리 발사 위치 좌표
+        /// </summary>
+        /// <returns></returns>
         public Point GetAttackPosition()
         {
             // 도토리가 캐릭터의 중앙에서 발사되도록

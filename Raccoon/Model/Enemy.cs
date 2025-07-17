@@ -7,16 +7,19 @@ using System.Windows.Forms;
 
 namespace Raccoon
 {
+    /// <summary>
+    /// 적 몬스터 관련 클래스
+    /// </summary>
     public class Enemy
     {
-        Random rand = new Random();
-        int[] temp = new int[3];
-        int[] baseY = new int[3];
-        int x = 51;
-        int x1;
-        Bitmap[] bitmap = new Bitmap[4];
-        Bitmap scret;
-        private Rectangle[] enemyRect = new Rectangle[3]; // 일반 적 3마리
+        Random rand = new Random(); // 랜덤 값 생성
+        int[] temp = new int[3]; // 적의 Y 좌표를 무작위로 선택하기 위한 임시 배열 (baseY의 인덱스 저장)
+        int[] baseY = new int[3]; // 일반 적 몬스터가 배치될 수 있는 고정된 Y 좌표들
+        int x = 51; // 적 몬스터들의 X 좌표
+        int x1; // 비밀 항아리에서 나오는 적의 현재 X 좌표
+        Bitmap[] bitmap = new Bitmap[4]; // 적 몬스터 이미지들
+        Bitmap scret; // 비밀 항아리 아이템 이미지
+        private Rectangle[] enemyRect = new Rectangle[3]; // 적 몬스터 3마리의 충돌 영역
         public Rectangle[] _EnemyRect
         {
             get
@@ -28,7 +31,7 @@ namespace Raccoon
                 enemyRect = value;
             }
         }
-        private int score = 0;
+        private int score = 0; // 총 점수
         public int _Score
         {
             get
@@ -40,7 +43,7 @@ namespace Raccoon
                 score = value;
             }
         }
-        private bool mode;
+        private bool mode; // 비밀 항아리에서 나오는 적 몬스터 활성화
         public bool _Mode
         {
             get
@@ -52,7 +55,7 @@ namespace Raccoon
                 mode = value;
             }
         }
-        private bool twinkle;
+        private bool twinkle; // 비밀 항아리에서 나오는 적 몬스터 깜빡임
         public bool _Twinkle
         {
             get
@@ -64,7 +67,7 @@ namespace Raccoon
                 twinkle = value;
             }
         }
-        private bool gameOver;
+        private bool gameOver; // 게임 오버 상태
         public bool _GameOver
         {
             get
@@ -76,7 +79,7 @@ namespace Raccoon
                 gameOver = value;
             }
         }
-        private Rectangle scretColRect; // 일반 적 3마리
+        private Rectangle scretColRect; // 비밀 항아리에서 나오는 적 몬스터의 충돌 영역
         public Rectangle _ScretColRect
         {
             get
@@ -89,24 +92,37 @@ namespace Raccoon
             }
         }
 
-        Rectangle[] scretRect = new Rectangle[4];
-        Rectangle deletRect = new Rectangle(0, 0, 0, 0);
-        Rectangle scretPo, scorePo;
-        
-        bool right, left, right1, left1,  mode1, respone, scoreAni;
-        int time = 0;
-        int time1 = 0;
-        int time2 = 0;
-        int time3 = 0;
-        int time4 = 0;
-        int scretRand;
+        Rectangle[] scretRect = new Rectangle[4]; // 비밀 항아리 아이템 4개의 위치 및 충돌 영역
+        Rectangle deletRect = new Rectangle(0, 0, 0, 0); // 영역 삭제
+        Rectangle scretPo; // 비밀 항아리에서 나온 적 초기 생성 위치
+        Rectangle scorePo; // 점수 표시될 위치
 
-        Font font;
-        PrivateFontCollection privateFonts;
-        private int[] enemyHP = new int[4]; // 적 체력
-        private int INITIAL_ENEMY_HP = 1; // 기본 체력
-        private List<Items> activeItems = new List<Items>(); // 현재 활성화된 아이템들을 담을 리스트
-    
+        bool right, left, right1, left1, mode1, respone, scoreAni;
+        // right: 적이 오른쪽으로 이동하는지
+        // left: 적이 왼쪽으로 이동하는지
+        // right1: 비밀 항아리 적이 오른쪽으로 이동하는지
+        // left1: 비밀 항아리 적이 왼쪽으로 이동하는지
+        // mode1: 비밀 항아리 적의 초기 이동 방향 (false: 오른쪽으로 시작, true: 왼쪽으로 시작) 및 이동 상태 전환
+        // respone: 비밀 항아리 적의 무적 시간 (true: 공격 가능, false: 무적)
+        // scoreAni: 점수 표시 애니메이션 활성화
+
+        int time = 0; // 적 애니메이션/이동 타이머
+        int time1 = 0; // 비밀 항아리 적 몬스터 애니메이션 타이머
+        int time2 = 0; // 비밀 항아리 적 몬스터 깜빡임 제어 타이머
+        int time3 = 0; // 비밀 항아리 적 몬스터 무적 시간 제어 타이머
+        int time4 = 0; // 점수 애니메이션 지속 시간 타이머
+        int scretRand; // 비밀 항아리에서 나올 아이템/몬스터 종류를 결정하는 랜덤 값
+
+        Font font; // 폰트
+        PrivateFontCollection privateFonts; // 사용자 정의 글꼴 로드 및 관리
+
+        private int[] enemyHP = new int[4]; // 적들의 체력을 저장하는 배열
+        private int INITIAL_ENEMY_HP = 1; // 적 몬스터 초기 기본 체력 값
+        private List<Items> activeItems = new List<Items>(); // 현재 화면에 활성화되어 있는 아이템들을 담는 리스트
+
+        /// <summary>
+        /// 적 생성자 메서드
+        /// </summary>
         public Enemy()
         {
             yRandom();
@@ -115,6 +131,9 @@ namespace Raccoon
             InitializeEnemyHP();
         }
 
+        /// <summary>
+        /// 적 체력 초기화 메서드
+        /// </summary>
         void InitializeEnemyHP()
         {
             for (int i = 0; i < enemyHP.Length; i++) // enemyHP 배열의 모든 요소 초기화
@@ -122,7 +141,9 @@ namespace Raccoon
                 enemyHP[i] = INITIAL_ENEMY_HP;
             }
         }
-
+        /// <summary>
+        /// 적 초기화 메서드
+        /// </summary>
         public void reSet()
         {
             yRandom();
@@ -136,14 +157,18 @@ namespace Raccoon
             gameOver = false;
             InitializeEnemyHP(); //체력 추가
         }
-
+        /// <summary>
+        /// 폰트 생성 메서드
+        /// </summary>
         void createFont()
         {
             privateFonts = new PrivateFontCollection();
             privateFonts.AddFontFile("neoletters.ttf");
             font = new Font(privateFonts.Families[0], 10f, FontStyle.Regular);
         }
-
+        /// <summary>
+        /// 비밀 항아리 이미지 및 초기 위치, 충돌 영역 설정 메서드
+        /// </summary>
         void createScret()
         {
             scret = Properties.Resources.scretItem;
@@ -152,7 +177,9 @@ namespace Raccoon
             scretRect[2] = new Rectangle(85, 253, 35, 35);
             scretRect[3] = new Rectangle(680, 157, 35, 35);
         }
-
+        /// <summary>
+        /// 적 이미지 로드 및 적 y 좌료 무작위 선택 메서드
+        /// </summary>
         void yRandom()
         {
             bitmap[0] = Properties.Resources.rightEnemy;
@@ -169,7 +196,10 @@ namespace Raccoon
                     if (temp[i] == temp[j]) i--;
             }
         }
-
+        /// <summary>
+        /// Object 그리기 메서드
+        /// </summary>
+        /// <param name="e"></param>
         public void draw(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -220,7 +250,10 @@ namespace Raccoon
                 g.DrawString("1000", font, Brushes.White, scorePo.Left, scorePo.Top);
             }
         }
-
+        /// <summary>
+        /// 몬스터 및 적 간의 충돌 감지 및 움직임 메서드
+        /// </summary>
+        /// <param name="chRect"></param>
         public void move(Rectangle chRect)
         {
             if (x <= 51)
@@ -284,7 +317,10 @@ namespace Raccoon
             ani();
             screteCol(chRect);
         }
-
+        /// <summary>
+        /// 비밀 항아리 아이템 생성 랜덤 및 충돌 처리 메서드
+        /// </summary>
+        /// <param name="chRect"></param>
         void screteCol(Rectangle chRect) //여기에 아이템 추가하기.
         {
             for (int i = 0; i < 4; i++)
@@ -313,7 +349,9 @@ namespace Raccoon
                 }
             }
         }
-
+        /// <summary>
+        /// 점수 표시 시간 및 비밀 항아리 몬스터 깜빡임, 무적시간, 적 이동 애니메이션 메서드
+        /// </summary>
         void ani()
         {
             time++;
@@ -410,7 +448,10 @@ namespace Raccoon
                 }
             }
         }
-        //공격 받은 적
+        /// <summary>
+        /// 적 공격 데미지 체크 메서드
+        /// </summary>
+        /// <param name="enemyIndex"></param>
         public void TakeDamage(int enemyIndex)
         {
             if (enemyIndex >= 0 && enemyIndex < enemyHP.Length) // 유효한 인덱스 범위 확인
