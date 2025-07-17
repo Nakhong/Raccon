@@ -14,6 +14,19 @@ namespace Raccoon
     /// </summary>
     public class Character
     {
+
+        private int moveSpeed = 2; // 캐릭터 이동 속도
+        public int _MoveSpeed
+        {
+            get
+            {
+                return moveSpeed;
+            }
+            set
+            {
+                moveSpeed = value;
+            }
+        }
         Bitmap leftSprites, rightSprites, ladderSprites, fallSpritess, jumpBit;
         private int x = 740; // 캐릭터 현재 X 좌표
         public int _X
@@ -408,18 +421,23 @@ namespace Raccoon
         {
             if (cState == 1 && x > 51 && !xStop && !mode1 && !mode3)  // 좌로이동
             {
-                x -= 2;
+                x -= _MoveSpeed;
                 lAni = true;   //캐릭터 이동중에 보여줄 애니메이션 조건설정
             }
             else
+            {
                 lAni = false; 
+            }
+
             if (cState == 2 && x < xrLimit && !xStop && !mode1 && !mode3) //우로이동
             {
-                x += 2;
+                x += _MoveSpeed;
                 rAni = true;   //캐릭터 이동중에 보여줄 애니메이션 조건설정
             }
             else
+            {
                 rAni = false;
+            }
 
             for (int i = 0; i < 5; i++)
             {

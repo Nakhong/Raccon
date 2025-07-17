@@ -21,23 +21,22 @@ namespace Raccoon
                 rect = value;
             }
         }
-        private Image acornImage; // 이미지
-        private int speed = 10; // 날아가는 속도
-        private int direction; // 방향 (0 :왼쪽/ 1 :오른쪽)
         private bool IsActive; // 활성화 체크
-        public bool _IsActive 
+        public bool _IsActive
         {
-            get 
+            get
             {
-                return IsActive; 
+                return IsActive;
             }
-            set 
+            set
             {
                 IsActive = value;
             }
         }
-
-        private int startX; // 도토리의 시작 X 위치
+        private Image _acornImage; // 이미지
+        private int _speed = 10; // 날아가는 속도
+        private int _direction; // 방향 (0 :왼쪽/ 1 :오른쪽)
+        private int _startX; // 도토리의 시작 X 위치
         private const int MAX_ATTACK_DISTANCE = 300; // 최대 공격 거리
         /// <summary>
         /// 도토리 생성자
@@ -47,11 +46,11 @@ namespace Raccoon
         /// <param name="dir">도토리 방향</param>
         public Acorn(int startX, float startY, int dir)
         {
-            acornImage = Properties.Resources.Acorn;
+            _acornImage = Properties.Resources.Acorn;
             rect = new Rectangle(startX, (int)startY, 20, 20);
-            direction = dir;
+            _direction = dir;
             IsActive = true;
-            this.startX = startX; // 시작 X 위치 저장
+            this._startX = startX; // 시작 X 위치 저장
         }
         /// <summary>
         /// 도토리의 이동, 적 충돌, 데미지, 사거리 메서드
@@ -60,13 +59,13 @@ namespace Raccoon
         public void action(Enemy enemy)
         {
             // 1. 도토리 이동 로직
-            if (direction == 0) // 왼쪽으로 이동
+            if (_direction == 0) // 왼쪽으로 이동
             {
-                rect.X -= speed;
+                rect.X -= _speed;
             }
             else // 오른쪽으로 이동
             {
-                rect.X += speed;
+                rect.X += _speed;
             }
 
             // 2. 비활성화 조건
@@ -77,7 +76,7 @@ namespace Raccoon
             }
 
             // 최대 공격 거리 제한 로직
-            if (Math.Abs(rect.X - startX) > MAX_ATTACK_DISTANCE)
+            if (Math.Abs(rect.X - _startX) > MAX_ATTACK_DISTANCE)
             {
                 IsActive = false;
             }
@@ -111,7 +110,7 @@ namespace Raccoon
         {
             if (IsActive)
             {
-                g.DrawImage(acornImage, rect);
+                g.DrawImage(_acornImage, rect);
             }
         }
     }

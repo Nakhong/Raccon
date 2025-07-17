@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Raccoon.Model
 {
-    class Items
+    public class Items
     {
         private Rectangle rect;
         public Rectangle _Rect
@@ -73,10 +73,10 @@ namespace Raccoon.Model
             switch (type)
             {
                 case ItemType.SpeedUp:
-                    _Image = Properties.Resources.speedUp; // 예시: speedUpItem 이미지를 Properties.Resources에 추가했다고 가정
+                    _Image = Properties.Resources.speedUp; 
                     break;
                 default:
-                    _Image = Properties.Resources.speedUp; // 기본 이미지
+                    _Image = Properties.Resources.speedUp;
                     break;
             }
         }

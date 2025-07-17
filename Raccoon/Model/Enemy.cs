@@ -118,7 +118,20 @@ namespace Raccoon
 
         private int[] enemyHP = new int[4]; // 적들의 체력을 저장하는 배열
         private int INITIAL_ENEMY_HP = 1; // 적 몬스터 초기 기본 체력 값
-        private List<Items> activeItems = new List<Items>(); // 현재 화면에 활성화되어 있는 아이템들을 담는 리스트
+
+        private List<Items> activeItems;
+        public List<Items> _ActiveItems // 현재 화면에 활성화되어 있는 아이템들을 담는 리스트
+        {
+            get
+            {
+                return activeItems;
+            }
+            set
+            {
+                activeItems = value;
+            }
+        }
+
 
         /// <summary>
         /// 적 생성자 메서드
@@ -129,6 +142,7 @@ namespace Raccoon
             createScret();
             createFont();
             InitializeEnemyHP();
+            _ActiveItems = new List<Items>();
         }
 
         /// <summary>
@@ -156,6 +170,7 @@ namespace Raccoon
             mode = false;
             gameOver = false;
             InitializeEnemyHP(); //체력 추가
+            _ActiveItems.Clear(); // 아이템 리스트 초기화
         }
         /// <summary>
         /// 폰트 생성 메서드
@@ -212,15 +227,13 @@ namespace Raccoon
 
             }
 
-            // --- 아이템 그리기 ---
-            foreach (var item in activeItems)
+            foreach (var item in _ActiveItems)
             {
                 if (item._IsActive)
                 {
                     item.Draw(g);
                 }
             }
-
             for (int i = 0; i < 3; i++)
             {
                 // 일반 적이 죽지 않았을 때만 그림 (enemyHP[i] > 0으로 확인)
