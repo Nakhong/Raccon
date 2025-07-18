@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Raccoon.Model
 {
+    /// <summary>
+    /// 아이템 클래스
+    /// </summary>
     public class Items
     {
         private Rectangle rect;
@@ -94,6 +97,7 @@ namespace Raccoon.Model
             _IsActive = false;
             _Rect = new Rectangle(0, 0, 0, 0); // 충돌 영역 제거
         }
+        //아이템 타이머 넣기
     }
 }
 

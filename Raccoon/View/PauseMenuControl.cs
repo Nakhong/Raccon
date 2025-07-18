@@ -34,11 +34,10 @@ namespace Raccoon.View
         /// <param name="e"></param>
         private void btnRestart_Click(object sender, EventArgs e)
         {
-
             _parentRaccoonForm._Character.reSet();
             _parentRaccoonForm._Obstruction.reSet();
             _parentRaccoonForm._Enemy.reSet();
-
+            _parentRaccoonForm.ResumeGame();
         }
     }
 }

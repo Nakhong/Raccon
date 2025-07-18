@@ -28,9 +28,9 @@ namespace Raccoon
         {            
             Graphics g = e.Graphics;           
             g.DrawString(str, font, Brushes.White, 100, 30);
-            g.DrawString("다시시작 버튼 : S", font1, Brushes.White, 330, 15);
-            g.DrawString("일시정지 : P", font1, Brushes.White, 330, 45);
-            g.DrawString("공격 : Z", font1, Brushes.White, 330, 75);
+            //g.DrawString("다시시작 버튼 : S", font1, Brushes.White, 330, 15);
+            //g.DrawString("일시정지 : P", font1, Brushes.White, 330, 45);
+            //g.DrawString("공격 : Z", font1, Brushes.White, 330, 75);
             g.DrawString(str1, font1, Brushes.White, 280, 320);
         }       
 
